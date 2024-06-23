@@ -9,6 +9,7 @@ export interface BenchmarkResult {
     range?: string;
     unit: string;
     extra?: string;
+    group?: string;
 }
 
 interface GitHubUser {
@@ -660,8 +661,8 @@ function extractBenchmarkDotnetResult(output: string): BenchmarkResult[] {
 function extractCustomBenchmarkResult(output: string): BenchmarkResult[] {
     try {
         const json: BenchmarkResult[] = JSON.parse(output);
-        return json.map(({ name, value, unit, range, extra }) => {
-            return { name, value, unit, range, extra };
+        return json.map(({ name, value, unit, range, extra, group}) => {
+            return { name, value, unit, range, extra, group};
         });
     } catch (err: any) {
         throw new Error(
