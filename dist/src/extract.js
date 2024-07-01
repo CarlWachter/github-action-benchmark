@@ -84,9 +84,17 @@ async function getCommitFromGitHubAPIRequest(githubToken, ref) {
     };
 }
 async function getCommit(githubToken, ref) {
-    if (github.context.payload.head_commit) {
-        return github.context.payload.head_commit;
+
+    const payload = github.context.payload;
+
+    // Check if submodule commit information is present in the head commit of the payload
+    if (payload.head_commit && payload.head_commit.submodules) {
+        const kernelSubmodule = payload.head_commit.submodules.find(submodule => submodule.path === "kernel");
+        if (kernelSubmodule) {
+            return kernelSubmodule.commit;
+        }
     }
+
     const pr = github.context.payload.pull_request;
     if (pr) {
         return getCommitFromPullRequestPayload(pr);
